@@ -101,13 +101,13 @@ sudo apt install -y mariadb-server
 sudo mysql_secure_installation
 
 # Prompt user for database information
-read -p "Enter the database name (press Enter to use default '$DOMAIN_db'): " DB_NAME
+read -p "Database name ('$DOMAIN_db'): " DB_NAME
 DB_NAME=${DB_NAME:-${DOMAIN}_db}
 
-read -p "Enter the database username (press Enter to use default '$DOMAIN_user'): " DB_USER
+read -p "Database username ('$DOMAIN_user'): " DB_USER
 DB_USER=${DB_USER:-${DOMAIN}_user}
 
-read -p "Enter the database password (press Enter to use default 'password'): " DB_PASSWORD
+read -p "Database password ('password'): " DB_PASSWORD
 DB_PASSWORD=${DB_PASSWORD:-password}
 
 # Create database
@@ -134,6 +134,9 @@ sed -i "s/database_name_here/$DB_NAME/" wp-config.php
 sed -i "s/username_here/$DB_USER/" wp-config.php
 sed -i "s/password_here/$DB_PASSWORD/" wp-config.php
 sed -i "s/localhost/127.0.0.1/" wp-config.php
+
+# Remove the downloaded WordPress archive
+rm -f /var/www/$DOMAIN/latest.tar.gz
 
 # Start Caddy
 sudo systemctl start caddy
