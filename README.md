@@ -1,7 +1,8 @@
-# Debian Caddy MariaDB PHP
+# DCMPW Installation Script
+Debian - Caddy - MariaDB - PHP - Wordpress
 
 ## Update OS
 `sudo apt update && sudo apt full-upgrade -y && sudo reboot`
 
 ## Install
-`sudo wget https://raw.githubusercontent.com/zonprox/lcmp/main/lcmp.sh -O lcmp.sh && sudo chmod +x lcmp.sh && sudo ./lcmp.sh`
+`sudo wget https://raw.githubusercontent.com/zonprox/dcmpw/main/dcmpw.sh -O dcmpw.sh && sudo chmod +x dcmpw.sh && sudo ./dcmpw.sh`
