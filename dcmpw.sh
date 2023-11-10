@@ -85,7 +85,7 @@ echo "$DOMAIN {
 }" | sudo tee /etc/caddy/Caddyfile
 
 # Install PHP extensions
-sudo apt install -y php-curl php-gd php-intl php-mbstring php-soap php-xml php-xmlrpc php-imagick php-zip php-mysql php-fpm
+sudo apt install -y php-curl php-gd php-gmp php-intl php-mbstring php-soap php-xml php-xmlrpc php-imagick php-zip php-mysql php-fpm
 
 # Remove Apache2
 sudo apt purge -y apache2*
