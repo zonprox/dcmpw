@@ -1,6 +1,9 @@
 #!/bin/bash
 
-# Script install LCMP Wordpress (Linux Caddy Mariadb PHP)
+# LCMP (Linux Caddy Mariadb PHP) Installation Script
+
+# Update OS
+sudo apt update && sudo apt full-upgrade -y
 
 # Set locale
 sudo locale-gen en_US.UTF-8
@@ -28,21 +31,18 @@ echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 echo 'vm.swappiness=10' | sudo tee /etc/sysctl.d/99-xs-swappiness.conf
 
 # Install Caddy
+sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https
 curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
 echo 'deb [signed-by=/usr/share/keyrings/caddy-stable-archive-keyring.gpg] https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt stable main' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
-sudo apt update && sudo apt install -y caddy
+sudo apt update
+sudo apt install -y caddy
 
 # Prompt user for domain and email
 read -p "Enter your domain (e.g., example.com): " DOMAIN
 read -p "Enter your email for SSL certificate: " EMAIL
 
 # Configure Caddyfile
-echo "www.$DOMAIN {
-    redir https://$DOMAIN{uri}
-}
-
-$DOMAIN {
-
+echo "$DOMAIN {
     root * /var/www/$DOMAIN/htdocs
     encode zstd gzip
 
