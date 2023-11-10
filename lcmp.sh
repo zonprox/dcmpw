@@ -2,9 +2,6 @@
 
 # LCMP (Linux Caddy Mariadb PHP) Installation Script
 
-# Update OS
-sudo apt update && sudo apt full-upgrade -y
-
 # Set locale
 sudo locale-gen en_US.UTF-8
 sudo update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
