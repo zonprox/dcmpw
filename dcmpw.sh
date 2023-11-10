@@ -35,8 +35,8 @@ sudo apt update
 sudo apt install -y caddy
 
 # Prompt user for domain and email
-read -p "Enter your domain (e.g., example.com): " DOMAIN
-read -p "Enter your email for SSL certificate: " EMAIL
+read -p "Your domain (e.g., example.com): " DOMAIN
+read -p "Your email for SSL certificate: " EMAIL
 
 # Configure Caddyfile
 echo "$DOMAIN {
@@ -86,6 +86,8 @@ echo "$DOMAIN {
 
 # Install PHP extensions
 sudo apt install -y php-curl php-gd php-gmp php-intl php-mbstring php-soap php-xml php-xmlrpc php-imagick php-zip php-mysql php-fpm
+sudo sed -i 's/;upload_max_filesize = 2M/upload_max_filesize = 32M/' /etc/php/7.4/fpm/php.ini
+sudo sed -i 's/;post_max_size = 8M/post_max_size = 32M/' /etc/php/7.4/fpm/php.ini
 
 # Remove Apache2
 sudo apt purge -y apache2*
