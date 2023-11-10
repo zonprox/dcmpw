@@ -2,9 +2,6 @@
 
 # Script install LCMP Wordpress (Linux Caddy Mariadb PHP)
 
-# Update OS
-sudo apt update && sudo apt full-upgrade -y && sudo reboot
-
 # Set locale
 sudo locale-gen en_US.UTF-8
 sudo update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
