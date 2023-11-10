@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# LCMP (Linux Caddy Mariadb PHP) Installation Script
+# DCMP (Debian Caddy MariaDB PHP) Installation Script
 
 # Set locale
 sudo locale-gen en_US.UTF-8
