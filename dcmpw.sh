@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# Generate a random password for MySQL root user
-MYSQL_ROOT_PASSWORD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 16)
+# DCMP (Debian Caddy MariaDB PHP) Installation Script
 
 # Set colors for better visualization
 GREEN='\033[0;32m'
@@ -119,18 +118,9 @@ sudo systemctl restart php7.4-fpm.service
 echo -e "${YELLOW}Installing MariaDB...${NC}"
 sudo apt install -y mariadb-server
 
-# Set MySQL root password
-sudo mysql -uroot <<MYSQL_SCRIPT
-ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$MYSQL_ROOT_PASSWORD';
-FLUSH PRIVILEGES;
-MYSQL_SCRIPT
-
-# Run MySQL secure installation
-sudo mysql -uroot <<MYSQL_SCRIPT
-SET PASSWORD FOR 'root'@'localhost' = PASSWORD('$MYSQL_ROOT_PASSWORD');
-UNINSTALL PLUGIN validate_password;
-FLUSH PRIVILEGES;
-MYSQL_SCRIPT
+# Automatically set root password for MariaDB
+MYSQL_ROOT_PASSWORD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 16 ; echo '')
+sudo mysql -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('$MYSQL_ROOT_PASSWORD');"
 
 # Prompt user for database information
 read -p "$(echo -e ${YELLOW}"[?] Database name ('$DOMAIN_db'): "${NC})" DB_NAME
@@ -139,11 +129,12 @@ DB_NAME=${DB_NAME:-${DOMAIN}_db}
 read -p "$(echo -e ${YELLOW}"[?] Database username ('$DOMAIN_user'): "${NC})" DB_USER
 DB_USER=${DB_USER:-${DOMAIN}_user}
 
-read -p "$(echo -e ${YELLOW}"[?] Database password ('password'): "${NC})" DB_PASSWORD
-DB_PASSWORD=${DB_PASSWORD:-password}
+# Prompt user for database password, generate random if not provided
+read -p "$(echo -e ${YELLOW}"[?] Database password ('password', press Enter for random): "${NC})" DB_PASSWORD
+DB_PASSWORD=${DB_PASSWORD:-$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 16 ; echo '')}
 
 # Create database
-sudo mysql -uroot <<MYSQL_SCRIPT
+sudo mysql -uroot -p"$MYSQL_ROOT_PASSWORD" <<MYSQL_SCRIPT
 CREATE DATABASE IF NOT EXISTS $DB_NAME DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE USER IF NOT EXISTS '$DB_USER'@'localhost' IDENTIFIED BY '$DB_PASSWORD';
 GRANT ALL PRIVILEGES ON $DB_NAME.* TO '$DB_USER'@'localhost';
