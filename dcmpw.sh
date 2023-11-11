@@ -116,7 +116,7 @@ sudo systemctl restart php7.4-fpm.service
 
 # Install MariaDB
 echo -e "${YELLOW}Installing MariaDB...${NC}"
-sudo apt install -y mariadb-server
+sudo DEBIAN_FRONTEND=noninteractive apt install -y mariadb-server
 sudo mysql_secure_installation
 
 # Prompt user for database information
