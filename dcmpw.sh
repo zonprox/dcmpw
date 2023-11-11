@@ -1,5 +1,5 @@
-#!/bin/bash
 
+<<<<<<< HEAD:dcmpw.sh
 # DCMP (Debian Caddy MariaDB PHP) Installation Script
 
 # Set locale
@@ -144,3 +144,5 @@ rm -f /var/www/$DOMAIN/latest.tar.gz
 
 # Start Caddy
 sudo systemctl start caddy
+=======
+>>>>>>> parent of 9fdc4ff (Create lcmp.sh):lcmp.sh
