@@ -2,6 +2,19 @@
 
 # DCMP (Debian Caddy MariaDB PHP) Installation Script
 
+# Colors for formatting
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Function to display information with color
+display_info() {
+  printf "${GREEN}==============================================${NC}\n"
+  printf "${GREEN}$1${NC}\n"
+  printf "${GREEN}==============================================${NC}\n"
+}
+
 # Set locale
 sudo locale-gen en_US.UTF-8
 sudo update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
@@ -10,9 +23,11 @@ sudo update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 sudo timedatectl set-timezone Asia/Ho_Chi_Minh
 
 # Set nameserver
+echo -e "${YELLOW}Setting nameserver...${NC}"
 echo -e "nameserver 8.8.8.8\nnameserver 1.1.1.1" | sudo tee /etc/resolv.conf
 
 # Enable TCP BBR congestion control
+echo -e "${YELLOW}Enabling TCP BBR congestion control...${NC}"
 cat <<EOF | sudo tee /etc/sysctl.conf
 # TCP BBR congestion control
 net.core.default_qdisc=fq
@@ -20,6 +35,7 @@ net.ipv4.tcp_congestion_control=bbr
 EOF
 
 # Create swap
+echo -e "${YELLOW}Creating swap...${NC}"
 sudo fallocate -l 2G /swapfile
 sudo chmod 600 /swapfile
 sudo mkswap /swapfile
@@ -28,6 +44,7 @@ echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 echo 'vm.swappiness=10' | sudo tee /etc/sysctl.d/99-xs-swappiness.conf
 
 # Install Caddy
+echo -e "${YELLOW}Installing Caddy...${NC}"
 sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https
 curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
 echo 'deb [signed-by=/usr/share/keyrings/caddy-stable-archive-keyring.gpg] https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt stable main' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
@@ -35,26 +52,21 @@ sudo apt update
 sudo apt install -y caddy
 
 # Prompt user for domain and email
+echo -e "${YELLOW}Configuring Caddy...${NC}"
 read -p "Your domain (e.g., example.com): " DOMAIN
 DOMAIN=${DOMAIN:-example.com}
 
 read -p "Your email for SSL certificate: " EMAIL
 
 # Display configuration information
-echo "=============================================="
-echo "Installation Completed!"
-echo "=============================================="
-echo "Domain: $DOMAIN"
-echo "Email: $EMAIL"
-echo "Database Name: $DB_NAME"
-echo "Database User: $DB_USER"
-echo "Database Password: $DB_PASSWORD"
-echo "WordPress Installation Directory: /var/www/$DOMAIN/wordpress"
-echo "=============================================="
+display_info "Installation Completed!"
+echo -e "Domain: ${GREEN}$DOMAIN${NC}"
+echo -e "Email: ${GREEN}$EMAIL${NC}"
 
 # Configure Caddyfile
-echo "$DOMAIN {
-    root * /var/www/$DOMAIN/wordpress
+echo -e "${YELLOW}Configuring Caddyfile...${NC}"
+echo "${DOMAIN} {
+    root * /var/www/${DOMAIN}/wordpress
     encode zstd gzip
 
     @disallowed {
@@ -99,6 +111,7 @@ echo "$DOMAIN {
 }" | sudo tee /etc/caddy/Caddyfile
 
 # Install PHP extensions
+echo -e "${YELLOW}Installing PHP extensions...${NC}"
 sudo apt install -y php-curl php-gd php-gmp php-intl php-mbstring php-soap php-xml php-xmlrpc php-imagick php-zip php-mysql php-fpm
 sudo sed -i 's/;upload_max_filesize = 2M/upload_max_filesize = 64M/' /etc/php/7.4/fpm/php.ini
 sudo sed -i 's/;post_max_size = 8M/post_max_size = 64M/' /etc/php/7.4/fpm/php.ini
@@ -106,38 +119,42 @@ sudo sed -i 's/;max_execution_time = 30/max_execution_time = 180/' /etc/php/7.4/
 sudo sed -i 's/;max_input_vars = 1000/max_input_vars = 10000/' /etc/php/7.4/fpm/php.ini
 
 # Restart PHP
+echo -e "${YELLOW}Restarting PHP...${NC}"
 sudo systemctl restart php7.4-fpm.service
 
 # Remove Apache2
+echo -e "${YELLOW}Removing Apache2...${NC}"
 sudo apt purge -y apache2*
 
 # Restart PHP
+echo -e "${YELLOW}Restarting PHP...${NC}"
 sudo systemctl restart php7.4-fpm.service
 
 # Install MariaDB
+echo -e "${YELLOW}Installing MariaDB...${NC}"
 sudo apt install -y mariadb-server
 sudo mysql_secure_installation
 
 # Prompt user for database information
-read -p "Database name ('$DOMAIN_db'): " DB_NAME
+echo -e "${YELLOW}Configuring Database...${NC}"
+read -p "Database name ('${DOMAIN}_db'): " DB_NAME
 DB_NAME=${DB_NAME:-${DOMAIN}_db}
 
-read -p "Database username ('$DOMAIN_user'): " DB_USER
+read -p "Database username ('${DOMAIN}_user'): " DB_USER
 DB_USER=${DB_USER:-${DOMAIN}_user}
 
 read -p "Database password ('password'): " DB_PASSWORD
 DB_PASSWORD=${DB_PASSWORD:-password}
 
 # Display database information
-echo "=============================================="
-echo "Database Information:"
-echo "Domain: $DOMAIN"
-echo "Database Name: $DB_NAME"
-echo "Database User: $DB_USER"
-echo "Database Password: $DB_PASSWORD"
-echo "=============================================="
+display_info "Database Information:"
+echo -e "Domain: ${GREEN}$DOMAIN${NC}"
+echo -e "Database Name: ${GREEN}$DB_NAME${NC}"
+echo -e "Database User: ${GREEN}$DB_USER${NC}"
+echo -e "Database Password: ${GREEN}$DB_PASSWORD${NC}"
 
 # Get WordPress
+echo -e "${YELLOW}Installing WordPress...${NC}"
 sudo mkdir -p /var/www/$DOMAIN
 cd /var/www/$DOMAIN
 wget -q https://wordpress.org/latest.tar.gz
@@ -158,4 +175,5 @@ sed -i "s/localhost/127.0.0.1/" wp-config.php
 rm -f /var/www/$DOMAIN/latest.tar.gz
 
 # Start Caddy
+echo -e "${YELLOW}Starting Caddy...${NC}"
 sudo systemctl start caddy
