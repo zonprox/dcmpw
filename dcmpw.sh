@@ -40,7 +40,7 @@ read -p "Your email for SSL certificate: " EMAIL
 
 # Configure Caddyfile
 echo "$DOMAIN {
-    root * /var/www/$DOMAIN/htdocs
+    root * /var/www/$DOMAIN/wordpress
     encode zstd gzip
 
     @disallowed {
@@ -90,6 +90,9 @@ sudo sed -i 's/;upload_max_filesize = 2M/upload_max_filesize = 64M/' /etc/php/7.
 sudo sed -i 's/;post_max_size = 8M/post_max_size = 64M/' /etc/php/7.4/fpm/php.ini
 sudo sed -i 's/;max_execution_time = 30/max_execution_time = 180/' /etc/php/7.4/fpm/php.ini
 sudo sed -i 's/;max_input_vars = 1000/max_input_vars = 10000/' /etc/php/7.4/fpm/php.ini
+
+# Restart PHP
+sudo systemctl restart php7.4-fpm.service
 
 # Remove Apache2
 sudo apt purge -y apache2*
