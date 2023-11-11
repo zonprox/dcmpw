@@ -36,7 +36,21 @@ sudo apt install -y caddy
 
 # Prompt user for domain and email
 read -p "Your domain (e.g., example.com): " DOMAIN
+DOMAIN=${DOMAIN:-example.com}
+
 read -p "Your email for SSL certificate: " EMAIL
+
+# Display configuration information
+echo "=============================================="
+echo "Installation Completed!"
+echo "=============================================="
+echo "Domain: $DOMAIN"
+echo "Email: $EMAIL"
+echo "Database Name: $DB_NAME"
+echo "Database User: $DB_USER"
+echo "Database Password: $DB_PASSWORD"
+echo "WordPress Installation Directory: /var/www/$DOMAIN/wordpress"
+echo "=============================================="
 
 # Configure Caddyfile
 echo "$DOMAIN {
@@ -114,13 +128,14 @@ DB_USER=${DB_USER:-${DOMAIN}_user}
 read -p "Database password ('password'): " DB_PASSWORD
 DB_PASSWORD=${DB_PASSWORD:-password}
 
-# Create database
-sudo mysql -uroot <<MYSQL_SCRIPT
-CREATE DATABASE IF NOT EXISTS $DB_NAME DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER IF NOT EXISTS '$DB_USER'@'localhost' IDENTIFIED BY '$DB_PASSWORD';
-GRANT ALL PRIVILEGES ON $DB_NAME.* TO '$DB_USER'@'localhost';
-FLUSH PRIVILEGES;
-MYSQL_SCRIPT
+# Display database information
+echo "=============================================="
+echo "Database Information:"
+echo "Domain: $DOMAIN"
+echo "Database Name: $DB_NAME"
+echo "Database User: $DB_USER"
+echo "Database Password: $DB_PASSWORD"
+echo "=============================================="
 
 # Get WordPress
 sudo mkdir -p /var/www/$DOMAIN
