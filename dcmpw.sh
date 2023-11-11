@@ -119,7 +119,7 @@ sed -i "s/localhost/127.0.0.1/" wp-config.php
 
 # Start Caddy
 echo -e "${YELLOW}Starting Caddy...${NC}"
-sudo systemctl start caddy
+sudo systemctl restart caddy
 
 # Display configuration information
 echo -e "${GREEN}Installation and configuration completed.${NC}"
