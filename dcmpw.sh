@@ -40,7 +40,7 @@ sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https
 curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
 curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
 sudo apt update
-sudo apt install caddy
+sudo apt install caddy -y
 
 # Prompt user for domain and email
 read -p "$(echo -e ${YELLOW}"[?] Your domain (e.g., example.com): "${NC})" DOMAIN
@@ -114,13 +114,13 @@ FLUSH PRIVILEGES;
 MYSQL_CONFIG
 
 # Prompt user for database information
-read -p "${YELLOW}Database name ('$DOMAIN_db'): ${NC}" DB_NAME
+read -p "$(echo -e ${YELLOW}"[?] Database name ('$DOMAIN_db'): "${NC})" DB_NAME
 DB_NAME=${DB_NAME:-${DOMAIN}_db}
 
-read -p "${YELLOW}Database username ('$DOMAIN_user'): ${NC}" DB_USER
+read -p "$(echo -e ${YELLOW}"[?] Database username ('$DOMAIN_user'): "${NC})" DB_USER
 DB_USER=${DB_USER:-${DOMAIN}_user}
 
-read -p "${YELLOW}Database password ('password'): ${NC}" DB_PASSWORD
+read -p "$(echo -e ${YELLOW}"[?] Database password ('password'): "${NC})" DB_PASSWORD
 DB_PASSWORD=${DB_PASSWORD:-password}
 
 # Create database
