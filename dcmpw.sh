@@ -43,8 +43,8 @@ sudo apt update
 sudo apt install caddy
 
 # Prompt user for domain and email
-read -p "${YELLOW}[?] Your domain (e.g., example.com): ${NC}" DOMAIN
-read -p "${YELLOW}[?] Your email for SSL certificate: ${NC}" EMAIL
+read -p "$(echo -e ${YELLOW}"[?] Your domain (e.g., example.com): "${NC})" DOMAIN
+read -p "$(echo -e ${YELLOW}"[?] Your email for SSL certificate: "${NC})" EMAIL
 
 # Configure Caddyfile
 echo -e "${YELLOW}Configuring Caddyfile...${NC}"
@@ -104,10 +104,12 @@ sudo sed -i 's/;max_input_vars = 1000/max_input_vars = 10000/' /etc/php/7.4/fpm/
 # Install MariaDB
 echo -e "${YELLOW}Installing MariaDB...${NC}"
 sudo DEBIAN_FRONTEND=noninteractive apt install -y mariadb-server
+
+# Modify the MariaDB configuration
 echo -e "${YELLOW}Configuring MariaDB...${NC}"
 sudo mysql -uroot <<MYSQL_CONFIG
 USE mysql;
-UPDATE user SET plugin='unix_socket' WHERE User='root';
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';
 FLUSH PRIVILEGES;
 MYSQL_CONFIG
 
