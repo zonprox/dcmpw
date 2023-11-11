@@ -32,7 +32,7 @@ sudo chmod 600 /swapfile
 sudo mkswap /swapfile
 sudo swapon /swapfile
 echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
-echo 'vm.swappiness=10' | sudo tee /etc/sysctl.d/99-xs-swappiness.conf
+echo 'vm.swappiness=0' | sudo tee /etc/sysctl.d/99-xs-swappiness.conf
 
 # Install Caddy
 echo -e "${YELLOW}Installing Caddy...${NC}"
@@ -40,7 +40,7 @@ sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https
 curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
 curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
 sudo apt update
-sudo apt install caddy -y
+sudo apt install caddy
 
 # Prompt user for domain and email
 read -p "$(echo -e ${YELLOW}"[?] Your domain (e.g., example.com): "${NC})" DOMAIN
