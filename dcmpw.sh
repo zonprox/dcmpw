@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# DCMP (Debian Caddy MariaDB PHP) Installation Script
+# Generate a random password for MySQL root user
+MYSQL_ROOT_PASSWORD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 16)
 
 # Set colors for better visualization
 GREEN='\033[0;32m'
@@ -116,8 +117,20 @@ sudo systemctl restart php7.4-fpm.service
 
 # Install MariaDB
 echo -e "${YELLOW}Installing MariaDB...${NC}"
-sudo DEBIAN_FRONTEND=noninteractive apt install -y mariadb-server
-sudo mysql_secure_installation
+sudo apt install -y mariadb-server
+
+# Set MySQL root password
+sudo mysql -uroot <<MYSQL_SCRIPT
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$MYSQL_ROOT_PASSWORD';
+FLUSH PRIVILEGES;
+MYSQL_SCRIPT
+
+# Run MySQL secure installation
+sudo mysql -uroot <<MYSQL_SCRIPT
+SET PASSWORD FOR 'root'@'localhost' = PASSWORD('$MYSQL_ROOT_PASSWORD');
+UNINSTALL PLUGIN validate_password;
+FLUSH PRIVILEGES;
+MYSQL_SCRIPT
 
 # Prompt user for database information
 read -p "$(echo -e ${YELLOW}"[?] Database name ('$DOMAIN_db'): "${NC})" DB_NAME
