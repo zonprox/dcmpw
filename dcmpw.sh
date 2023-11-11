@@ -103,9 +103,13 @@ sudo sed -i 's/;max_input_vars = 1000/max_input_vars = 10000/' /etc/php/7.4/fpm/
 
 # Install MariaDB
 echo -e "${YELLOW}Installing MariaDB...${NC}"
-sudo apt install -y mariadb-server
+sudo DEBIAN_FRONTEND=noninteractive apt install -y mariadb-server
 echo -e "${YELLOW}Configuring MariaDB...${NC}"
-sudo mysql_secure_installation
+sudo mysql -uroot <<MYSQL_CONFIG
+USE mysql;
+UPDATE user SET plugin='unix_socket' WHERE User='root';
+FLUSH PRIVILEGES;
+MYSQL_CONFIG
 
 # Prompt user for database information
 read -p "${YELLOW}Database name ('$DOMAIN_db'): ${NC}" DB_NAME
