@@ -5,8 +5,7 @@ This guide provides a step-by-step process for installing a web server stack on 
 ## Reinstall OS - Debian 11
 ```shell
 wget --no-check-certificate -qO InstallNET.sh 'https://gitee.com/mb9e8j2/Tools/raw/master/Linux_reinstall/InstallNET.sh' && chmod a+x InstallNET.sh
-bash InstallNET.sh -debian 11
-reboot
+bash InstallNET.sh -debian 11 && reboot
 ```
 The installation process may take approximately 5 - 30 minutes.\
 Default Root Password: `LeitboGi0ro`
