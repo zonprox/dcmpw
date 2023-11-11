@@ -49,7 +49,7 @@ read -p "$(echo -e ${YELLOW}"[?] Your email for SSL certificate: "${NC})" EMAIL
 # Configure Caddyfile
 echo -e "${YELLOW}Configuring Caddyfile...${NC}"
 echo "$DOMAIN {
-    root * /var/www/$DOMAIN/wordpress
+    root * /var/www/$DOMAIN/htdocs
     encode zstd gzip
 
     @disallowed {
@@ -101,6 +101,15 @@ sudo sed -i 's/;post_max_size = 8M/post_max_size = 64M/' /etc/php/7.4/fpm/php.in
 sudo sed -i 's/;max_execution_time = 30/max_execution_time = 180/' /etc/php/7.4/fpm/php.ini
 sudo sed -i 's/;max_input_vars = 1000/max_input_vars = 10000/' /etc/php/7.4/fpm/php.ini
 
+<<<<<<< HEAD
+=======
+# Remove Apache2
+sudo apt purge -y apache2*
+
+# Restart PHP
+sudo systemctl restart php7.4-fpm.service
+
+>>>>>>> parent of 897fec9 (Update dcmpw.sh)
 # Install MariaDB
 echo -e "${YELLOW}Installing MariaDB...${NC}"
 sudo DEBIAN_FRONTEND=noninteractive apt install -y mariadb-server
